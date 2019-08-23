@@ -1,9 +1,8 @@
+import 'package:bmi_calculator/components/gender_card.dart';
 import 'package:bmi_calculator/utils/widget_util.dart';
 import 'package:flutter/material.dart';
 
 class InputScreen extends StatelessWidget {
-  final WidgetUtil util = WidgetUtil();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +22,8 @@ class InputScreen extends StatelessWidget {
 
   Widget _buildTitle(BuildContext context) {
     return Padding(
-      padding:
-          EdgeInsets.only(left: 24.0, top: util.screenAwareSize(56.0, context)),
+      padding: EdgeInsets.only(
+          left: 24.0, top: WidgetUtil.screenAwareSize(56.0, context)),
       child: Text(
         'BMI Calculator',
         style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
@@ -35,13 +34,15 @@ class InputScreen extends StatelessWidget {
   Widget _buildCards(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-          left: 14.0, right: 14.0, top: util.screenAwareSize(32.0, context)),
+          left: 14.0,
+          right: 14.0,
+          top: WidgetUtil.screenAwareSize(32.0, context)),
       child: Row(
         children: <Widget>[
           Expanded(
               child: Column(
             children: <Widget>[
-              Expanded(child: _tempCard('Gender')),
+              Expanded(child: GenderCard()),
               Expanded(child: _tempCard('Weight'))
             ],
           )),
@@ -54,7 +55,7 @@ class InputScreen extends StatelessWidget {
   Widget _buildBottom(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      height: util.screenAwareSize(108.0, context),
+      height: WidgetUtil.screenAwareSize(108.0, context),
       width: double.infinity,
       child: Switch(value: true, onChanged: (value) {}),
     );
