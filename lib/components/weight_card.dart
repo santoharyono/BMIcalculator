@@ -1,5 +1,6 @@
 import 'package:bmi_calculator/components/card_title.dart';
 import 'package:bmi_calculator/components/weight_background.dart';
+import 'package:bmi_calculator/components/weight_slider.dart';
 import 'package:bmi_calculator/utils/widget_util.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,13 @@ class _WeightCardState extends State<WeightCard> {
   }
 
   Widget _drawSlider() {
-    return WeightBackground();
+    return WeightBackground(
+      child: LayoutBuilder(
+          builder: (context, constraints) => WeightSlider(
+                minValue: 30,
+                maxValue: 110,
+                width: constraints.maxWidth,
+              )),
+    );
   }
 }
