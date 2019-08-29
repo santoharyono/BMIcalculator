@@ -1,7 +1,10 @@
 import 'package:bmi_calculator/components/card_title.dart';
+import 'package:bmi_calculator/components/gender_arrow.dart';
 import 'package:bmi_calculator/components/gender_circle.dart';
 import 'package:bmi_calculator/components/gender_icon_translated.dart';
+import 'package:bmi_calculator/components/tap_handler.dart';
 import 'package:bmi_calculator/enums/gender.dart';
+import 'package:bmi_calculator/utils/bmi_constants.dart';
 import 'package:bmi_calculator/utils/widget_util.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +17,22 @@ class GenderCard extends StatefulWidget {
   _GenderCardState createState() => _GenderCardState();
 }
 
-class _GenderCardState extends State<GenderCard> {
+class _GenderCardState extends State<GenderCard>
+    with SingleTickerProviderStateMixin {
+  AnimationController _arrowAnimationController;
+  Gender selectedGender;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGender = widget.initialGender ?? Gender.other;
+    _arrowAnimationController = AnimationController(
+        vsync: this,
+        lowerBound: -defaultGenderAngle,
+        upperBound: defaultGenderAngle,
+        value: genderAngles[selectedGender]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -40,27 +58,57 @@ class _GenderCardState extends State<GenderCard> {
   }
 
   Widget _draMainStack() {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        _drawCircleIndicator(),
-        GenderIconTranslated(
-          gender: Gender.male,
-        ),
-        GenderIconTranslated(
-          gender: Gender.other,
-        ),
-        GenderIconTranslated(
-          gender: Gender.female,
-        )
-      ],
+    return Container(
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          _drawCircleIndicator(),
+          GenderIconTranslated(
+            gender: Gender.female,
+          ),
+          GenderIconTranslated(
+            gender: Gender.other,
+          ),
+          GenderIconTranslated(
+            gender: Gender.male,
+          ),
+          _drawGestureDetector()
+        ],
+      ),
     );
   }
 
   Widget _drawCircleIndicator() {
     return Stack(
       alignment: Alignment.center,
-      children: <Widget>[GenderCirlcle()],
+      children: <Widget>[
+        GenderCirlcle(),
+        GenderArrow(
+          listenable: _arrowAnimationController,
+        )
+      ],
     );
+  }
+
+  _drawGestureDetector() {
+    return Positioned.fill(
+        child: TapHandler(
+      onGenderTapped: _setSelectedGender,
+    ));
+  }
+
+  void _setSelectedGender(Gender gender) {
+    setState(() {
+      return selectedGender = gender;
+    });
+    _arrowAnimationController.animateTo(genderAngles[gender],
+        duration: Duration(milliseconds: 150));
+  }
+
+  @override
+  void dispose() {
+    _arrowAnimationController.dispose();
+    super.dispose();
   }
 }
