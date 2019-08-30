@@ -5,11 +5,22 @@ import 'package:bmi_calculator/utils/widget_util.dart';
 import 'package:flutter/material.dart';
 
 class WeightCard extends StatefulWidget {
+  final int initialWeight;
+
+  WeightCard({Key key, this.initialWeight}) : super(key: key);
   @override
   _WeightCardState createState() => _WeightCardState();
 }
 
 class _WeightCardState extends State<WeightCard> {
+  int weight;
+
+  @override
+  void initState() {
+    super.initState();
+    weight = widget.initialWeight ?? 70;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -40,6 +51,12 @@ class _WeightCardState extends State<WeightCard> {
                 minValue: 30,
                 maxValue: 110,
                 width: constraints.maxWidth,
+                value: weight,
+                onChanged: (val) {
+                  setState(() {
+                    weight = val;
+                  });
+                },
               )),
     );
   }
