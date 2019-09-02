@@ -1,3 +1,4 @@
+import 'package:bmi_calculator/components/height_slider.dart';
 import 'package:bmi_calculator/utils/bmi_constants.dart';
 import 'package:bmi_calculator/utils/widget_util.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,27 @@ class HeightPicker extends StatefulWidget {
 }
 
 class _HeightPickerState extends State<HeightPicker> {
+  double get _pixelsPerUnit => _drawingHeight / widget.totalUnits;
+
+  double get _sliderPosition {
+    double halfOfBottomLabel = labelsFontSize / 2;
+    int unitsFromBottom = widget.height - widget.minHeight;
+
+    return halfOfBottomLabel + unitsFromBottom * _pixelsPerUnit;
+  }
+
+  double get _drawingHeight {
+    double totalHeight = widget.widgetHeight;
+    double marginBottom = marginBottomAdapted(context);
+    double marginTop = marginTopAdapted(context);
+
+    return totalHeight - (marginBottom + marginTop + labelsFontSize);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: <Widget>[_drawLabels()],
+      children: <Widget>[_drawSlider(), _drawLabels()],
     );
   }
 
@@ -52,6 +70,15 @@ class _HeightPickerState extends State<HeightPicker> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
       ),
+    );
+  }
+
+  Widget _drawSlider() {
+    return Positioned(
+      child: HeightSlider(height: widget.height),
+      left: 0.0,
+      right: 0.0,
+      bottom: _sliderPosition,
     );
   }
 }
