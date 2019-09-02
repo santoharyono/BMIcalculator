@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -16,7 +18,8 @@ class WeightSlider extends StatelessWidget {
       this.width,
       this.value,
       this.onChanged})
-      : scrollController = ScrollController(),
+      : scrollController = ScrollController(
+            initialScrollOffset: (value - minValue) * width / 3),
         super(key: key);
 
   double get itemExtent => width / 3;
@@ -32,15 +35,19 @@ class WeightSlider extends StatelessWidget {
           final int itemValue = _indexToValue(index);
           bool isExtra = index == 0 || index == itemCount - 1;
 
-          return isExtra
-              ? Container()
-              : FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    itemValue.toString(),
-                    style: _getTextStyle(itemValue),
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => _animateTo(itemValue, durationMillis: 50),
+            child: isExtra
+                ? Container()
+                : FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      itemValue.toString(),
+                      style: _getTextStyle(itemValue),
+                    ),
                   ),
-                );
+          );
         },
         scrollDirection: Axis.horizontal,
         itemExtent: itemExtent,
@@ -58,6 +65,7 @@ class WeightSlider extends StatelessWidget {
   int _offsetToMiddleValue(double offset) {
     int indexOfMiddleElement = _offsetToMiddleIndex(offset);
     int middleValue = _indexToValue(indexOfMiddleElement);
+    middleValue = math.max(minValue, math.min(maxValue, middleValue));
     return middleValue;
   }
 

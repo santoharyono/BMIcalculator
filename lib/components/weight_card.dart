@@ -46,8 +46,10 @@ class _WeightCardState extends State<WeightCard> {
 
   Widget _drawSlider() {
     return WeightBackground(
-      child: LayoutBuilder(
-          builder: (context, constraints) => WeightSlider(
+      child: LayoutBuilder(builder: (context, constraints) {
+        return constraints.isTight
+            ? Container()
+            : WeightSlider(
                 minValue: 30,
                 maxValue: 110,
                 width: constraints.maxWidth,
@@ -57,7 +59,8 @@ class _WeightCardState extends State<WeightCard> {
                     weight = val;
                   });
                 },
-              )),
+              );
+      }),
     );
   }
 }
